@@ -1,0 +1,65 @@
+name: Bank Churn Training Pipeline
+
+# When does this pipeline run?
+on:
+  push:
+    branches: [main]        # runs when you push to main
+  schedule:
+    - cron: "0 0 * * 1"    # runs every Monday at midnight
+
+jobs:
+  train:
+    runs-on: ubuntu-latest  # GitHub gives us a free Linux machine
+
+    steps:
+      # Step 1 - Get our code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2 - Setup Python
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      # Step 3 - Install libraries
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4 - Check data quality first
+      - name: Check Data Quality
+        run: python src/pipeline.py
+        
+      # Step 5 - Train model only if data is good
+      - name: Train Model
+        run: |
+          cd src
+          python train.py
+
+      # Step 6 - Run tests
+      - name: Run Tests
+        run: pytest tests/
+
+      # Step 7 - Notify if failed
+      - name: Notify on Failure
+        if: failure()
+        run: echo "🚨 Pipeline failed! Check logs above."
+```
+
+---
+
+## What Happens Step by Step
+```
+You push code to GitHub
+        ↓
+GitHub gives you a free Linux machine
+        ↓
+Installs Python + libraries
+        ↓
+Checks data quality      ← stops here if data bad
+        ↓
+Trains model             ← only if data good
+        ↓
+Runs tests               ← validates everything
+        ↓
+✅ Done! or 🚨 Alert if failed
