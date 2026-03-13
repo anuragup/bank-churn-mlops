@@ -44,22 +44,3 @@ jobs:
       - name: Notify on Failure
         if: failure()
         run: echo "🚨 Pipeline failed! Check logs above."
-```
-
----
-
-## What Happens Step by Step
-```
-You push code to GitHub
-        ↓
-GitHub gives you a free Linux machine
-        ↓
-Installs Python + libraries
-        ↓
-Checks data quality      ← stops here if data bad
-        ↓
-Trains model             ← only if data good
-        ↓
-Runs tests               ← validates everything
-        ↓
-✅ Done! or 🚨 Alert if failed
