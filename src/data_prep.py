@@ -12,9 +12,15 @@ with open(config_path) as f:
     config = yaml.safe_load(f)
 
 def load_data():
-    df = pd.read_csv(config["data"]["filepath"])
-    print("✅ Data loaded:", df.shape)
-    return df
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(BASE_DIR, "../data/bank_churn.csv")
+
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(f"Dataset not found at {data_path}")
+
+    print(f"✅ Loading data from: {data_path}")
+
+    return pd.read_csv(data_path)
 
 def clean_data(df):
     # Drop useless columns
