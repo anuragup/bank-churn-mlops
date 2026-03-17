@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 import joblib
 
 from data_prep import load_data
+import pipeline
 
 
 def train():
@@ -55,14 +56,19 @@ def train():
     print(f"✅ Model AUC ROC: {auc}")
 
     # Save model
-    joblib.dump(pipeline, "model.pkl")
-    print("✅ Model saved as model.pkl")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(BASE_DIR, "../artifacts/model.pkl")
+
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
+
+    joblib.dump(pipeline, model_path)
 
     return {
-    "accuracy": accuracy,
-    "f1_score": f1,
-    "auc_roc": auc
-}
+        "accuracy": accuracy,
+        "f1_score": f1,
+        "auc_roc": auc
+    }
+
 
 
 if __name__ == "__main__":
