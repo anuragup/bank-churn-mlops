@@ -3,7 +3,12 @@ import yaml
 from sklearn.preprocessing import LabelEncoder
 
 # Load config
-with open("config.yaml") as f:
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(BASE_DIR, "../config.yaml")
+
+with open(config_path) as f:
     config = yaml.safe_load(f)
 
 def load_data():
