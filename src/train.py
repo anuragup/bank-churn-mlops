@@ -1,31 +1,57 @@
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import joblib
+
+from data_prep import load_data
+
+
 def train():
-    # Load config
-    with open("config.yaml") as f:
-        config = yaml.safe_load(f)
+    # Load data
+    data = load_data()
 
-    # ... all your training code ...
+    X = data.drop("Exited", axis=1)
+    y = data["Exited"]
 
-    with mlflow.start_run():
-        # ... model training ...
+    # Split data (IMPORTANT)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-        mlflow.log_metric("accuracy", accuracy)
-        mlflow.log_metric("f1_score", f1)
-        mlflow.log_metric("auc_roc", auc)
+    # Identify column types
+    categorical_cols = X.select_dtypes(include=["object"]).columns
+    numerical_cols = X.select_dtypes(exclude=["object"]).columns
 
-        mlflow.sklearn.log_model(model, "churn_model")
+    # Preprocessing
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_cols),
+            ("num", "passthrough", numerical_cols)
+        ]
+    )
 
-        print(f"Accuracy : {accuracy:.3f}")
-        print(f"F1 Score : {f1:.3f}")
-        print(f"AUC ROC  : {auc:.3f}")
+    # Pipeline
+    pipeline = Pipeline(steps=[
+        ("preprocessor", preprocessor),
+        ("model", RandomForestClassifier(n_estimators=100, random_state=42))
+    ])
 
-        # ✅ return is INSIDE train() function
-        return {
-            "accuracy": accuracy,
-            "f1_score": f1,
-            "auc_roc": auc
-        }
+    # Train
+    pipeline.fit(X_train, y_train)
+
+    # Evaluate
+    preds = pipeline.predict(X_test)
+    accuracy = accuracy_score(y_test, preds)
+
+    print(f"✅ Model Accuracy: {accuracy}")
+
+    # Save model
+    joblib.dump(pipeline, "model.pkl")
+    print("✅ Model saved as model.pkl")
 
 
-# this is OUTSIDE — completely separate
 if __name__ == "__main__":
     train()
