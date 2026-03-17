@@ -3,7 +3,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
 import joblib
 
 from data_prep import load_data
@@ -45,14 +45,18 @@ def train():
     # Evaluate
     preds = pipeline.predict(X_test)
     accuracy = accuracy_score(y_test, preds)
+    f1 = f1_score(y_test, preds)
 
     print(f"✅ Model Accuracy: {accuracy}")
+    print(f"✅ Model F1 Score: {f1}")
 
     # Save model
     joblib.dump(pipeline, "model.pkl")
     print("✅ Model saved as model.pkl")
 
-    return {"accuracy": accuracy}
+    return {"accuracy": accuracy, 
+            "f1_score": f1
+            }
 
 
 if __name__ == "__main__":
