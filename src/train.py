@@ -52,6 +52,8 @@ def train():
     joblib.dump(pipeline, "model.pkl")
     print("✅ Model saved as model.pkl")
 
+    return {"accuracy": accuracy}
+
 
 if __name__ == "__main__":
     train()

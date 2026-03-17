@@ -149,6 +149,9 @@ def run_pipeline():
     logger.info("🤖 Stage 4: Training model...")
     try:
         metrics = train()
+
+        if metrics["accuracy"] < 0.75:
+            raise Exception("Model accuracy too low")
         logger.info(f"✅ Training complete: {metrics}")
     except Exception as e:
         logger.error(f"❌ Training failed: {e}")
