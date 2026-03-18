@@ -1,7 +1,7 @@
-# Churn Prediction – MLOps Basics
+# Churn Prediction – MLOps 
 
 ## Overview
-Simple churn prediction model with basic MLOps setup for retraining and artifact handling.
+Churn prediction model with MLOps setup for retraining and artifact handling.
 
 ---
 
@@ -23,3 +23,27 @@ Data → Preprocess → Train → Save Model → Predict
 ## Tech
 
 Python · scikit-learn · GitHub Actions 
+
+
+---
+
+## API (FastAPI)
+
+Basic inference can be exposed via FastAPI:
+
+```python
+from fastapi import FastAPI
+import pickle
+
+app = FastAPI()
+
+model = pickle.load(open("model.pkl", "rb"))
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
+
+@app.post("/predict")
+def predict(data: list):
+    prediction = model.predict([data])
+    return {"prediction": int(prediction[0])}
