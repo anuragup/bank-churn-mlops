@@ -1,28 +1,25 @@
-Churn Prediction – MLOps Basics
-Overview
+# Churn Prediction – MLOps Basics
 
+## Overview
 Simple churn prediction model with basic MLOps setup for retraining and artifact handling.
 
-Setup
+---
 
-Model: scikit-learn
+## Setup
 
-Artifact: model.pkl
+- **Model**: scikit-learn  
+- **Artifact**: `model.pkl`  
+- **Preprocessing**: saved and reused during inference  
+- **CI/CD**: GitHub Actions for retraining  
 
-Preprocessing: saved and reused during inference
+---
 
-CI/CD: GitHub Actions for retraining
-
-Flow
+## Flow
 Data → Preprocess → Train → Save Model → Predict
-Notes
 
-Ensures training-serving consistency
 
-Retraining pipeline is CI/CD driven
+---
 
-Ready to integrate with external storage (S3 / Blob)
+## Tech
 
-Tech
-
-Python · scikit-learn · GitHub Actions
+Python · scikit-learn · GitHub Actions 
